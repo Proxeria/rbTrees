@@ -29,6 +29,7 @@ private:
   };
   void addToNode(struct Node*, struct Node*);
   void printNode(struct Node*, int indentLevel);
+  struct Node* findNode(struct Node* node, int x);
   Node* root = NULL;
 };
 
@@ -80,8 +81,34 @@ void Tree::remove(int x) {
   return;
 }
 
+struct Tree::Node* Tree::findNode(struct Node* node, int x) {
+  if (node == NULL) {
+    return NULL;
+  }
+  else {
+    if (node->data == x) {
+      return node;
+    }
+    else {
+      Node* match = findNode(node->left, x);
+      if (match != NULL) {
+	return match;
+      }
+      else {
+	return findNode(node->right, x);
+      }
+    }
+  }
+}
+
 int Tree::find(int x) {
-  return x;
+  Node* node = findNode(root, x);
+  if (node != NULL) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
 }
 
 void Tree::printNode(struct Node* node, int indentLevel) {
@@ -95,14 +122,12 @@ void Tree::printNode(struct Node* node, int indentLevel) {
     }
     cout << node->data << endl;
     printNode(node->left, indentLevel + 1);
-    
   }
 }
 
 void Tree::print() {
   printNode(root, 0);
 }
-
 
 // Driver program to test above functions
 int main() {
