@@ -16,6 +16,7 @@ public:
 private:
   struct Node {
     int data;
+    struct Node* parent;
     struct Node* left;
     struct Node* right;
     
@@ -23,6 +24,7 @@ private:
       data = val;
       
       //initialize l/r node children to null
+      parent = NULL;
       left = NULL;
       right = NULL;
     }
@@ -30,6 +32,10 @@ private:
   void addToNode(struct Node*, struct Node*);
   void printNode(struct Node*, int indentLevel);
   struct Node* findNode(struct Node* node, int x);
+  void removeNode(struct Node*);
+  void subtreeShift(struct Node*, struct Node*);
+  struct Node* treeSucc(struct Node*);
+  struct Node* treeMin(struct Node*);
   Node* root = NULL;
 };
 
@@ -51,6 +57,7 @@ void Tree::addToNode(struct Node* treeNode, struct Node* nextNode) {
     //going left
     if (treeNode->left == NULL) {
       treeNode->left = nextNode;
+      nextNode->parent = treeNode;
     }
     else {
       addToNode(treeNode->left, nextNode);
@@ -60,6 +67,7 @@ void Tree::addToNode(struct Node* treeNode, struct Node* nextNode) {
   else {
     if (treeNode->right == NULL) {
       treeNode->right = nextNode;
+      nextNode->parent = treeNode;
     }
     else {
       addToNode(treeNode->right, nextNode);
@@ -77,8 +85,68 @@ void Tree::insert(int x) {
   }
 }
 
+struct Tree::Node* Tree::treeMin(struct Node* x) {
+  while (x->left != NULL) {
+    x = x->left;
+  }
+  return x;
+}
+
+struct Tree::Node* Tree::treeSucc(struct Node* x) {
+  if (x->right != NULL) {
+    return treeMin(x->right);
+  }
+  struct Node* y = x->parent;
+  while ((y != NULL) && (x == y->right)) {
+    x = y;
+    y = y->parent;
+  }
+  return y;
+}
+
+//from https://en.wikipedia.org/wiki/Binary_search_tree
+void Tree::removeNode(struct Node* z) {
+  struct Node* y = NULL;
+  if (z->left == NULL) { 
+        subtreeShift(z, z->right);
+  }
+  else if (z->right == NULL) {
+    subtreeShift(z, z->left);
+  }
+  else {
+    y = treeSucc(z);
+    if (y->parent != z) {
+      subtreeShift(y, y->right);
+      y->right = z->right;
+      y->right->parent = y;
+    }
+    subtreeShift(z, y);
+    y->left = z->left;
+    y->left->parent = y;
+  }
+}
+
+//from https://en.wikipedia.org/wiki/Binary_search_tree
+void Tree::subtreeShift(struct Node* u, struct Node* v) {
+  if (u->parent == NULL) {
+    root = v;
+  }
+  else if (u == u->parent->left) {
+    u->parent->left = v;
+  }
+  else {
+    u->parent->right = v;
+  }
+  if (v != NULL) {
+    v->parent = u->parent;
+  }
+}
+
 void Tree::remove(int x) {
-  return;
+  struct Node* tempNode = findNode(root, x);
+  if (tempNode != NULL) {
+    removeNode(tempNode);
+  }
 }
 
 struct Tree::Node* Tree::findNode(struct Node* node, int x) {
@@ -164,7 +232,7 @@ int main() {
 	thisTree.insert(tempInt);	
       }
     }
-    
+    //consumes file's contents on use
     else if (input == "File") {
       while (std::getline(fileInput, line)) {
 	thisTree.insert(std::atoi(line.c_str()));
