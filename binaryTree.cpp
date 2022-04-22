@@ -39,19 +39,6 @@ private:
   Node* root = NULL;
 };
 
-/* tree function
-//make root
-  struct Node* root = new Node(1);
-
-  //follow tree
-  root->left = new Node(2);
-  root->right = new Node(3);
-
-  root->left = new Node(4);
-
-  return 0;
- */
-
 void Tree::addToNode(struct Node* treeNode, struct Node* nextNode) {
   if (treeNode->data > nextNode->data) {
     //going left
