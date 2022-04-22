@@ -50,28 +50,44 @@ int main() {
   cout << "Commands (Case Sensitive):" << endl;
   cout << "Line: enter a list of numbers in the input line" << endl;
   cout << "File: will use the list of names provided on the .txt file included" << endl;
-  cin >> input;
-  
-  if (input == "Line") {
-    int numofNum, i;
-    cout << "How many number will you enter?" << endl;
-    cin >> numofNum;
-    
-    
-    for (i = 1; i <= numofNum; i++) {
-      cout << "Enter number " << (i) << endl;
-      cin >> tempInt;
-      thisHeap.insert(tempInt);
-      cout << endl << "Size of array: " << thisHeap.getCount() << endl;
+  cout << "Delete: deletes a user specified node" << endl;
+  cout << "Find: finds a user specified node" << endl;
+  cout << "Print: prints the entire tree" << endl;
+  cout << "Quit: exits the program" << endl;
+  while (true) {
+    cout << "Command: ";
+    cin >> input;
+    cout << endl;
+    if (input == "Line") {
+      int numofNum, i;
+      cout << "How many number will you enter?" << endl;
+      cin >> numofNum;
+      
+      
+      for (i = 1; i <= numofNum; i++) {
+	cout << "Enter number " << (i) << endl;
+	cin >> tempInt;
+	
+	
+      }
     }
-  }
-  
-  else if (input == "File") {
-    while (std::getline(fileInput, line)) {
-      thisHeap.insert(std::atoi(line.c_str()));
+    
+    else if (input == "File") {
+      while (std::getline(fileInput, line)) {
+	
+      }
     }
-  }
-  while (thisHeap.getCount() > 0) {
-    cout << thisHeap.rmMax() << endl;
+    else if (input == "Delete") {
+      
+    }
+    else if (input == "Find") {
+      
+    }
+    else if (input == "Print") {
+      
+    }
+    else if (input == "Quit") {
+      break;
+    }
   }
 }
