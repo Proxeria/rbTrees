@@ -28,6 +28,7 @@ private:
     }
   };
   void addToNode(struct Node*, struct Node*);
+  void printNode(struct Node*, int indentLevel);
   Node* root = NULL;
 };
 
@@ -45,7 +46,7 @@ private:
  */
 
 void Tree::addToNode(struct Node* treeNode, struct Node* nextNode) {
-  if (treeNode->data < nextNode->data) {
+  if (treeNode->data > nextNode->data) {
     //going left
     if (treeNode->left == NULL) {
       treeNode->left = nextNode;
@@ -83,8 +84,23 @@ int Tree::find(int x) {
   return x;
 }
 
+void Tree::printNode(struct Node* node, int indentLevel) {
+  if (node == NULL) {
+    return;
+  }
+  else {
+    printNode(node->right, indentLevel + 1);
+    for (int i = 0; i < indentLevel; i++) {
+      cout << "   ";
+    }
+    cout << node->data << endl;
+    printNode(node->left, indentLevel + 1);
+    
+  }
+}
+
 void Tree::print() {
-  return;
+  printNode(root, 0);
 }
 
 
