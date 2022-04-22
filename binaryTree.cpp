@@ -12,6 +12,7 @@ public:
   void remove(int);
   int find(int);
   void print(void);
+  
 private:
   struct Node {
     int data;
@@ -26,6 +27,8 @@ private:
       right = NULL;
     }
   };
+  void addToNode(struct Node*, struct Node*);
+  Node* root = NULL;
 };
 
 /* tree function
@@ -41,8 +44,35 @@ private:
   return 0;
  */
 
+void Tree::addToNode(struct Node* treeNode, struct Node* nextNode) {
+  if (treeNode->data < nextNode->data) {
+    //going left
+    if (treeNode->left == NULL) {
+      treeNode->left = nextNode;
+    }
+    else {
+      addToNode(treeNode->left, nextNode);
+    }
+  }
+  //going right
+  else {
+    if (treeNode->right == NULL) {
+      treeNode->right = nextNode;
+    }
+    else {
+      addToNode(treeNode->right, nextNode);
+    }
+  }
+}
+
 void Tree::insert(int x) {
-  return;
+  struct Node* newNode = new Node(x);
+  if (root == NULL) {
+    root = newNode;
+  }
+  else {
+    addToNode(root, newNode);
+  }
 }
 
 void Tree::remove(int x) {
