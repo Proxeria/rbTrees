@@ -19,6 +19,7 @@ private:
     struct Node* parent;
     struct Node* left;
     struct Node* right;
+    bool isRed;
     
     Node(int val) {
       data = val;
