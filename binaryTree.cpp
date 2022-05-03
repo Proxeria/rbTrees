@@ -95,22 +95,7 @@ struct Tree::Node* Tree::treeSucc(struct Node* x) {
 //from https://en.wikipedia.org/wiki/Binary_search_tree
 void Tree::removeNode(struct Node* z) {
   struct Node* y = NULL;
-  if (z->left == NULL) { 
-        subtreeShift(z, z->right);
-  }
-  else if (z->right == NULL) {
-    subtreeShift(z, z->left);
-  }
-  else {
-    y = treeSucc(z);
-    if (y->parent != z) {
-      subtreeShift(y, y->right);
-      y->right = z->right;
-      y->right->parent = y;
-    }
-    subtreeShift(z, y);
-    y->left = z->left;
-    y->left->parent = y;
+  cout << "doesnt do anything right now" << endl;
   }
 }
 
