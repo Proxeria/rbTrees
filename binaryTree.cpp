@@ -176,7 +176,12 @@ void Tree::printNode(struct Node* node, int indentLevel) {
     for (int i = 0; i < indentLevel; i++) {
       cout << "   ";
     }
-    cout << node->data << endl;
+	if (node->isRed == true) {
+   	   cout << "R " << node->data << endl;
+	}
+	else {
+	   cout << "B " << node->data << endl;
+	}
     printNode(node->left, indentLevel + 1);
   }
 }
