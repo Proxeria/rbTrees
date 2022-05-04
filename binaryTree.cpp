@@ -97,7 +97,25 @@ while (x != root[T] && color(p(x)) == red) {
 color(root(T))<-black
    */
 }
-
+/*
+void Tree::leftRotate(T, x) {
+  y<-right(x) //set y
+  right(x)<-left(y) //turns y's left subtree into x's right subtree
+  if (left(y) != NULL) {
+     then p(left(y))<-x
+  }
+  p(y)<-p(x)  //link x's parent to y
+  if (p(x) == NULL) {
+     then root(T)<-y
+     else if (x == left(p(x))) {
+        then left(p(x))<-y
+        else right(p(x))<-y
+     }
+  }
+  left(y)<-x   //put x on y's left
+  p(x)<-y
+}
+*/
 struct Tree::Node* Tree::treeMin(struct Node* x) {
   while (x->left != NULL) {
     x = x->left;
@@ -106,15 +124,8 @@ struct Tree::Node* Tree::treeMin(struct Node* x) {
 }
 
 struct Tree::Node* Tree::treeSucc(struct Node* x) {
-  if (x->right != NULL) {
-    return treeMin(x->right);
-  }
-  struct Node* y = x->parent;
-  while ((y != NULL) && (x == y->right)) {
-    x = y;
-    y = y->parent;
-  }
-  return y;
+  cout << "does not work right now" << endl;
+  return x;
 }
 
 //from https://en.wikipedia.org/wiki/Binary_search_tree
@@ -126,25 +137,13 @@ void Tree::removeNode(struct Node* z) {
 
 //from https://en.wikipedia.org/wiki/Binary_search_tree
 void Tree::subtreeShift(struct Node* u, struct Node* v) {
-  if (u->parent == NULL) {
-    root = v;
-  }
-  else if (u == u->parent->left) {
-    u->parent->left = v;
-  }
-  else {
-    u->parent->right = v;
-  }
-  if (v != NULL) {
-    v->parent = u->parent;
-  }
+  cout << "does not work right now" << endl;
 }
 
+
+
 void Tree::remove(int x) {
-  struct Node* tempNode = findNode(root, x);
-  if (tempNode != NULL) {
-    removeNode(tempNode);
-  }
+  cout << "does not work right now" << endl;
 }
 
 struct Tree::Node* Tree::findNode(struct Node* node, int x) {
