@@ -33,10 +33,10 @@ private:
   void addToNode(struct Node*, struct Node*);
   void printNode(struct Node*, int indentLevel);
   struct Node* findNode(struct Node* node, int x);
-  void removeNode(struct Node*);
-  void subtreeShift(struct Node*, struct Node*);
-  struct Node* treeSucc(struct Node*);
-  struct Node* treeMin(struct Node*);
+  
+  
+  
+  
   Node* root = NULL;
 };
 
@@ -62,7 +62,7 @@ void Tree::addToNode(struct Node* treeNode, struct Node* nextNode) {
     }
   }
 }
-
+//psuedocode from http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap14.htm
 void Tree::insert(int x) {
   struct Node* newNode = new Node(x);
   if (root == NULL) {
@@ -116,35 +116,17 @@ void Tree::leftRotate(T, x) {
   p(x)<-y
 }
 */
-struct Tree::Node* Tree::treeMin(struct Node* x) {
-  while (x->left != NULL) {
-    x = x->left;
-  }
-  return x;
-}
-
-struct Tree::Node* Tree::treeSucc(struct Node* x) {
-  cout << "does not work right now" << endl;
-  return x;
-}
-
-//from https://en.wikipedia.org/wiki/Binary_search_tree
-void Tree::removeNode(struct Node* z) {
-  struct Node* y = NULL;
-  cout << "doesnt do anything right now" << endl;
-  }
-}
-
-//from https://en.wikipedia.org/wiki/Binary_search_tree
-void Tree::subtreeShift(struct Node* u, struct Node* v) {
-  cout << "does not work right now" << endl;
-}
 
 
 
-void Tree::remove(int x) {
-  cout << "does not work right now" << endl;
-}
+
+
+
+
+
+
+
+
 
 struct Tree::Node* Tree::findNode(struct Node* node, int x) {
   if (node == NULL) {
@@ -243,7 +225,7 @@ int main() {
     else if (input == "Remove") {
       cout << "Enter a number to remove: " << endl;
       cin >> tempInt;
-      thisTree.remove(tempInt);
+      cout << "remove" << endl; //thisTree.remove(tempInt);
     }
     else if (input == "Find") {
       cout << "Enter a number to find: " << endl;
