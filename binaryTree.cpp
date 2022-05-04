@@ -71,6 +71,31 @@ void Tree::insert(int x) {
   else {
     addToNode(root, newNode);
   }
+  /*
+color(x)<-red
+while (x != root[T] && color(p(x)) == red) {
+   do if (p(x) == left(p(p(x))) {
+      then y<-right(p(p(x))) {
+         if (color(y) == red) {
+            then color(p(x))<- black //case 1
+                 color(y)<-black     //case 1
+                 color(p(p(x)))<-red //case 1
+                 x<-p(p(x))          //case 1
+            else if (x == right(p(x))) {
+               then x<-p(x)          //case 2
+                  LEFT-ROTATE(T,x)   //case 2
+               color(p(x))<-black    //case 3
+               color(p(p(x)))<-red   //case 3
+               RIGHT-ROTATE(T, p(p(x))) //case 3
+            }
+         }
+      }
+      else (same as then clause
+            with "right" and "left" exchanged)
+   }
+}
+color(root(T))<-black
+   */
 }
 
 struct Tree::Node* Tree::treeMin(struct Node* x) {
