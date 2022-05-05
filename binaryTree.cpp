@@ -33,8 +33,8 @@ private:
   void addToNode(struct Node*, struct Node*);
   void printNode(struct Node*, int indentLevel);
   struct Node* findNode(struct Node* node, int x);
-  
-  
+  void leftRotate(struct Node*, struct Node*); //T, x
+  void rightRotate(struct Node*, struct Node*); //T, x
   
   
   Node* root = NULL;
@@ -71,62 +71,67 @@ void Tree::insert(int x) {
   else {
     addToNode(root, newNode);
   }
-  /*
-color(x)<-red
-while (x != root[T] && color(p(x)) == red) {
-   do if (p(x) == left(p(p(x))) {
-      then y<-right(p(p(x))) {
-         if (color(y) == red) {
-            then color(p(x))<- black //case 1
-                 color(y)<-black     //case 1
-                 color(p(p(x)))<-red //case 1
-                 x<-p(p(x))          //case 1
-            else if (x == right(p(x))) {
-               then x<-p(x)          //case 2
-                  LEFT-ROTATE(T,x)   //case 2
-               color(p(x))<-black    //case 3
-               color(p(p(x)))<-red   //case 3
-               RIGHT-ROTATE(T, p(p(x))) //case 3
-            }
-         }
-      }
-      else (same as then clause
-            with "right" and "left" exchanged)
-   }
+// color(x)<-red
+// while (x != root[T] && color(p(x)) == red) {
+//    do if (p(x) == left(p(p(x))) {
+//       then y<-right(p(p(x))) {
+//          if (color(y) == red) {
+//             then color(p(x))<- black //case 1
+//                  color(y)<-black     //case 1
+//                  color(p(p(x)))<-red //case 1
+//                  x<-p(p(x))          //case 1
+//             else if (x == right(p(x))) {
+//                then x<-p(x)          //case 2
+//                   LEFT-ROTATE(T,x)   //case 2
+//                color(p(x))<-black    //case 3
+//                color(p(p(x)))<-red   //case 3
+//                RIGHT-ROTATE(T, p(p(x))) //case 3
+//             }
+//          }
+//       }
+//       else (same as then clause
+//             with "right" and "left" exchanged)
+//    }
+// }
+// color(root(T))<-black
+//    
 }
-color(root(T))<-black
-   */
-}
-/*
-void Tree::leftRotate(T, x) {
-  y<-right(x) //set y
-  right(x)<-left(y) //turns y's left subtree into x's right subtree
-  if (left(y) != NULL) {
-     then p(left(y))<-x
-  }
-  p(y)<-p(x)  //link x's parent to y
-  if (p(x) == NULL) {
-     then root(T)<-y
-     else if (x == left(p(x))) {
-        then left(p(x))<-y
-        else right(p(x))<-y
-     }
-  }
-  left(y)<-x   //put x on y's left
-  p(x)<-y
-}
-*/
 
+// void Tree::leftRotate(T, x) {
+//   y<-right(x) //set y
+//   right(x)<-left(y) //turns y's left subtree into x's right subtree
+//   if (left(y) != NULL) {
+//      then p(left(y))<-x
+//   }
+//   p(y)<-p(x)  //link x's parent to y
+//   if (p(x) == NULL) {
+//      then root(T)<-y
+//      else if (x == left(p(x))) {
+//         then left(p(x))<-y
+//         else right(p(x))<-y
+//      }
+//   }
+//   left(y)<-x   //put x on y's left
+//   p(x)<-y
+// }
 
-
-
-
-
-
-
-
-
-
+// void Tree::rightRotate(T, x) {
+//   y<-right(x) //set y
+//   right(x)<-left(y) //turns y's right subtree into x's left subtree
+//   if (left(y) != NULL) {
+//      then p(left(y))<-x
+//   }
+//   p(y)<-p(x)  //link x's parent to y
+//   if (p(x) == NULL) {
+//      then root(T)<-y
+//      else if (x == left(p(x))) {
+//         then left(p(x))<-y
+//         else right(p(x))<-y
+//      }
+//   }
+//   left(y)<-x   //put x on y's right
+//   p(x)<-y
+// }
 
 struct Tree::Node* Tree::findNode(struct Node* node, int x) {
   if (node == NULL) {
