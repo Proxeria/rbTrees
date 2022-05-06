@@ -86,9 +86,13 @@ void Tree::addNode(struct Node* newNode) {
 	else if (newNode == newNode->parent->right) {
 	  newNode = newNode->parent;          //case 2
 	  leftRotate(newNode);   //case 2
+	}
+	if (newNode->parent != NULL) {
 	  newNode->parent->isRed = false;    //case 3
-	  newNode->parent->parent->isRed = true;   //case 3
-	  rightRotate(newNode->parent->parent); //case 3
+	  if (newNode->parent->parent != NULL) {
+	    newNode->parent->parent->isRed = true;   //case 3
+	    rightRotate(newNode->parent->parent); //case 3
+	  }
 	}
       }
       //else clause is same as above with left/right inverted
@@ -98,17 +102,21 @@ void Tree::addNode(struct Node* newNode) {
 	  break;
 	}
 	if (yNode->isRed) {
-	  newNode->parent->isRed = false; //case 1
-	  yNode->isRed = false;     //case 1
-	  newNode->parent->parent->isRed = true; //case 1
-	  newNode = newNode->parent->parent; //case 1
+	  newNode->parent->isRed = false; //case 4
+	  yNode->isRed = false;     //case 4
+	  newNode->parent->parent->isRed = true; //case 4
+	  newNode = newNode->parent->parent; //case 4
 	}
 	else if (newNode == newNode->parent->left) {
-	  newNode = newNode->parent;          //case 2
-	  rightRotate(newNode);   //case 2
-	  newNode->parent->isRed = false;    //case 3
-	  newNode->parent->parent->isRed = true;   //case 3
-	  leftRotate(newNode->parent->parent); //case 3
+	  newNode = newNode->parent;          //case 5
+	  rightRotate(newNode);   //case 5
+	}
+	if (newNode->parent != NULL) {
+	  newNode->parent->isRed = false;    //case 6
+	  if (newNode->parent->parent != NULL) {
+	    newNode->parent->parent->isRed = true;   //case 6
+	    leftRotate(newNode->parent->parent); //case 6
+	  }
 	}
       }
     }
