@@ -23,115 +23,112 @@ private:
     
     Node(int val) {
       data = val;
-      
+      isRed = false;
       //initialize l/r node children to null
       parent = NULL;
       left = NULL;
       right = NULL;
     }
   };
-  void addToNode(struct Node*, struct Node*);
+  void addNode(struct Node*);
   void printNode(struct Node*, int indentLevel);
   struct Node* findNode(struct Node* node, int x);
-  void leftRotate(struct Node*, struct Node*); //T, x
-  void rightRotate(struct Node*, struct Node*); //T, x
+  void leftRotate(struct Node*); // x
+  void rightRotate(struct Node*); // x
   
   
   Node* root = NULL;
 };
-
-void Tree::addToNode(struct Node* treeNode, struct Node* nextNode) {
-  if (treeNode->data > nextNode->data) {
-    //going left
-    if (treeNode->left == NULL) {
-      treeNode->left = nextNode;
-      nextNode->parent = treeNode;
-    }
-    else {
-      addToNode(treeNode->left, nextNode);
-    }
-  }
-  //going right
-  else {
-    if (treeNode->right == NULL) {
-      treeNode->right = nextNode;
-      nextNode->parent = treeNode;
-    }
-    else {
-      addToNode(treeNode->right, nextNode);
-    }
-  }
-}
 //psuedocode from http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap14.htm
+void Tree::addNode(struct Node* newNode) {
+  struct Node* yNode = NULL;
+  newNode->isRed = true;
+  while ((newNode != root) && (newNode->parent != NULL) && (newNode->parent->isRed)) {  
+    if ((newNode->parent != NULL) && (newNode->parent->parent != NULL)) { 
+      if (newNode->parent == newNode->parent->parent->left) {
+	yNode = newNode->parent->parent->right; 
+	if (yNode->isRed) {
+	  newNode->parent->isRed = false; //case 1
+	  yNode->isRed = false;     //case 1
+	  newNode->parent->parent->isRed = true; //case 1
+	  newNode = newNode->parent->parent; //case 1
+	}
+	else if (newNode == newNode->parent->right) {
+	  newNode = newNode->parent;          //case 2
+	  leftRotate(newNode);   //case 2
+	  newNode->parent->isRed = false;    //case 3
+	  newNode->parent->parent->isRed = true;   //case 3
+	  rightRotate(newNode->parent->parent); //case 3
+	}
+      }
+      //else clause is same as above with left/right inverted
+      else {
+	yNode = newNode->parent->parent->left; 
+	if (yNode->isRed) {
+	  newNode->parent->isRed = false; //case 1
+	  yNode->isRed = false;     //case 1
+	  newNode->parent->parent->isRed = true; //case 1
+	  newNode = newNode->parent->parent; //case 1
+	}
+	else if (newNode == newNode->parent->left) {
+	  newNode = newNode->parent;          //case 2
+	  rightRotate(newNode);   //case 2
+	  newNode->parent->isRed = false;    //case 3
+	  newNode->parent->parent->isRed = true;   //case 3
+	  leftRotate(newNode->parent->parent); //case 3
+	}
+      }
+    }
+  }
+  root->isRed = false; 
+}
+
 void Tree::insert(int x) {
   struct Node* newNode = new Node(x);
-  if (root == NULL) {
-    root = newNode;
-  }
-  else {
-    addToNode(root, newNode);
-  }
-// color(x)<-red
-// while (x != root[T] && color(p(x)) == red) {
-//    do if (p(x) == left(p(p(x))) {
-//       then y<-right(p(p(x))) {
-//          if (color(y) == red) {
-//             then color(p(x))<- black //case 1
-//                  color(y)<-black     //case 1
-//                  color(p(p(x)))<-red //case 1
-//                  x<-p(p(x))          //case 1
-//             else if (x == right(p(x))) {
-//                then x<-p(x)          //case 2
-//                   LEFT-ROTATE(T,x)   //case 2
-//                color(p(x))<-black    //case 3
-//                color(p(p(x)))<-red   //case 3
-//                RIGHT-ROTATE(T, p(p(x))) //case 3
-//             }
-//          }
-//       }
-//       else (same as then clause
-//             with "right" and "left" exchanged)
-//    }
-// }
-// color(root(T))<-black
-//    
+  addNode(newNode);
 }
 
-// void Tree::leftRotate(T, x) {
-//   y<-right(x) //set y
-//   right(x)<-left(y) //turns y's left subtree into x's right subtree
-//   if (left(y) != NULL) {
-//      then p(left(y))<-x
-//   }
-//   p(y)<-p(x)  //link x's parent to y
-//   if (p(x) == NULL) {
-//      then root(T)<-y
-//      else if (x == left(p(x))) {
-//         then left(p(x))<-y
-//         else right(p(x))<-y
-//      }
-//   }
-//   left(y)<-x   //put x on y's left
-//   p(x)<-y
-// }
+void Tree::leftRotate(struct Node* node) {
+  struct Node* yNode = NULL;
+  yNode = node->right; //set y
+  node->right = yNode->left; //turns y's left subtree into x's right subtree
+  if (yNode->left != NULL) {
+    yNode->left->parent = node;
+  }
+  yNode->parent = node->parent;  //link x's parent to y
+   if (node->parent == NULL) {
+     root = yNode;
+   }
+   else if (node == node->parent->left) {
+     node->parent->left = yNode;
+   }
+   else {
+     node->parent->right = yNode;
+   }  
+   yNode->left = node;   //put x on y's left
+   node->parent = yNode;
+}
 
-// void Tree::rightRotate(T, x) {
-//   y<-right(x) //set y
-//   right(x)<-left(y) //turns y's right subtree into x's left subtree
-//   if (left(y) != NULL) {
-//      then p(left(y))<-x
-//   }
-//   p(y)<-p(x)  //link x's parent to y
-//   if (p(x) == NULL) {
-//      then root(T)<-y
-//      else if (x == left(p(x))) {
-//         then left(p(x))<-y
-//         else right(p(x))<-y
-//      }
-//   }
-//   left(y)<-x   //put x on y's right
-//   p(x)<-y
-// }
+void Tree::rightRotate(struct Node* node) { 
+  struct Node* yNode = NULL;
+  yNode = node->left; //set y
+  node->left = yNode->right; //turns y's right subtree into x's left subtree
+  if (yNode->right != NULL) {
+    yNode->right->parent = node;
+  }
+  yNode->parent = node->parent;  //link x's parent to y
+   if (node->parent == NULL) {
+     root = yNode;
+   }
+   else if (node == node->parent->right) {
+     node->parent->right = yNode;
+   }
+   else {
+     node->parent->left = yNode;
+   }  
+   yNode->right = node;   //put x on y's right
+   node->parent = yNode;
+}
 
 struct Tree::Node* Tree::findNode(struct Node* node, int x) {
   if (node == NULL) {
