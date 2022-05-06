@@ -74,10 +74,10 @@ void Tree::addNode(struct Node* newNode) {
     if ((newNode->parent != NULL) && (newNode->parent->parent != NULL)) { 
       if (newNode->parent == newNode->parent->parent->left) {
 	yNode = newNode->parent->parent->right;
-	if (yNode == NULL) {
-	  break;
-	}
-	if (yNode->isRed) {
+	// if (yNode == NULL) {
+	//   break;
+	// }
+	if ((yNode != NULL) && (yNode->isRed)) {
 	  newNode->parent->isRed = false; //case 1
 	  yNode->isRed = false;     //case 1
 	  newNode->parent->parent->isRed = true; //case 1
@@ -98,10 +98,10 @@ void Tree::addNode(struct Node* newNode) {
       //else clause is same as above with left/right inverted
       else {
 	yNode = newNode->parent->parent->left; 
-	if (yNode == NULL) {
-	  break;
-	}
-	if (yNode->isRed) {
+	// if (yNode == NULL) {
+	//   break;
+	// }
+	if ((yNode != NULL) && (yNode->isRed)) {
 	  newNode->parent->isRed = false; //case 4
 	  yNode->isRed = false;     //case 4
 	  newNode->parent->parent->isRed = true; //case 4
