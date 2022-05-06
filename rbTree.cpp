@@ -35,18 +35,48 @@ private:
   struct Node* findNode(struct Node* node, int x);
   void leftRotate(struct Node*); // x
   void rightRotate(struct Node*); // x
+  void treeInsert(struct Node*);
   
   
   Node* root = NULL;
 };
+//from http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap13.htm
+void Tree::treeInsert(struct Node* newNode) {
+  struct Node* yNode = NULL;
+  struct Node* xNode = root;
+  
+  while (xNode != NULL) {
+       yNode = xNode;  
+       if (newNode->data < xNode->data) {
+	 xNode = xNode->left;
+       }
+       else {
+	 xNode = xNode->right;
+       }
+  }
+  newNode->parent = yNode;  
+  if (yNode == NULL) {
+    root = newNode;
+  }
+  else if (newNode->data < yNode->data) {
+    yNode->left = newNode;
+  }
+  else {
+    yNode->right = newNode;
+  }
+}
 //psuedocode from http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap14.htm
 void Tree::addNode(struct Node* newNode) {
   struct Node* yNode = NULL;
+  treeInsert(newNode);
   newNode->isRed = true;
   while ((newNode != root) && (newNode->parent != NULL) && (newNode->parent->isRed)) {  
     if ((newNode->parent != NULL) && (newNode->parent->parent != NULL)) { 
       if (newNode->parent == newNode->parent->parent->left) {
-	yNode = newNode->parent->parent->right; 
+	yNode = newNode->parent->parent->right;
+	if (yNode == NULL) {
+	  break;
+	}
 	if (yNode->isRed) {
 	  newNode->parent->isRed = false; //case 1
 	  yNode->isRed = false;     //case 1
@@ -64,6 +94,9 @@ void Tree::addNode(struct Node* newNode) {
       //else clause is same as above with left/right inverted
       else {
 	yNode = newNode->parent->parent->left; 
+	if (yNode == NULL) {
+	  break;
+	}
 	if (yNode->isRed) {
 	  newNode->parent->isRed = false; //case 1
 	  yNode->isRed = false;     //case 1
