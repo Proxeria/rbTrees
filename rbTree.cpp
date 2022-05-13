@@ -40,6 +40,58 @@ private:
   
   Node* root = NULL;
 };
+
+/*
+RB-DELETE-FIXUPIT,x)
+while x # root[7] and color[x] = BLACK
+do if x = left([x]]
+then wright[p[*]]
+if color[w] = RED
+then color[w] - BLACK Case 1
+color[p[x]] - RED > Case 1
+LEFT-ROTATE(T,P[X]) > Case 1
+W - right([x]] Case 1
+if colorſlefi[w]] = BLACK and color[right[w]]= BLACK
+then color[w] - RED Case 2
+X - [X] Case 2
+else if color right[w]] = BLACK
+then color(lefi[W]] - BLACK > Case 3
+14
+color[w] RED Case 3
+RIGHT-ROTATE(T,w) > Case 3
+w - right([x]] > Case 3
+color[w] - color(p[*]] Case 4
+color(p[x]] — BLACK Case 4
+colorfright[w]] - BLACK Case 4
+LEFT-ROTATE(T V[x]) Case 4
+x 1001[T] Case 4
+else (same as then clause
+with "right" and "left" exchanged)
+23 color[x] BLACK
+*/
+
+/*
+RB-DELETE (T, z)
+
+1 if left[z] = nil[T] or right[z] = nil[T]
+2      then y  z
+3      else y  TREE-SUCCESSOR(z)
+4 if left[y]  nil[T]     
+5     then x  left[y]
+6     else x  right[y]
+7 p[x]  p[y]
+8 if p[y] = nil[T]
+9    then root[T]  x
+10    else if y = left[p[y]]
+11            then left[p[y]]  x
+12            else right[p[y]]  x
+13 if y  z
+14     then key[z]  key[y]
+15           If y has other fields, copy them, too.
+16 if color[y] = BLACK
+17     then RB-DELETE-FIXUP (T,x)
+18 return y
+*/
 //from http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap13.htm
 void Tree::treeInsert(struct Node* newNode) {
   struct Node* yNode = NULL;
