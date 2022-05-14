@@ -42,55 +42,54 @@ private:
 };
 
 /*
-RB-DELETE-FIXUPIT,x)
-while x # root[7] and color[x] = BLACK
-do if x = left([x]]
-then wright[p[*]]
-if color[w] = RED
-then color[w] - BLACK Case 1
-color[p[x]] - RED > Case 1
-LEFT-ROTATE(T,P[X]) > Case 1
-W - right([x]] Case 1
-if colorſlefi[w]] = BLACK and color[right[w]]= BLACK
-then color[w] - RED Case 2
-X - [X] Case 2
-else if color right[w]] = BLACK
-then color(lefi[W]] - BLACK > Case 3
-14
-color[w] RED Case 3
-RIGHT-ROTATE(T,w) > Case 3
-w - right([x]] > Case 3
-color[w] - color(p[*]] Case 4
-color(p[x]] — BLACK Case 4
-colorfright[w]] - BLACK Case 4
-LEFT-ROTATE(T V[x]) Case 4
-x 1001[T] Case 4
-else (same as then clause
-with "right" and "left" exchanged)
-23 color[x] BLACK
+RB-DELETE-FIXUP(T,x)
+while x != root[T] and color[x] = BLACK
+   do if x = left(p(x))
+      then w<-right(p(x))
+         if color(w) = RED
+            then color(w)<-BLACK                               //Case 1
+                 color(p(x))<-RED                              //Case 1
+                 LEFT-ROTATE(T,p(x))                           //Case 1
+                 w<-right(p(x))                                //Case 1
+         if color(left(w)) = BLACK and color(right(w)) = BLACK
+            then color(w)<-RED                                 //Case 2
+               X<-p(x)                                         //Case 2
+            else if color(right(w)) = BLACK
+               then color(left(W))<-BLACK                      //Case 3
+                    color(w)<-RED                              //Case 3
+                    RIGHT-ROTATE(T,w)                          //Case 3
+                    w<-right(p(x))                             //Case 3
+                 color(w)<-color(p(x))                         //Case 4
+                 color(p(x))<—BLACK                            //Case 4
+                 color(right(w))<-BLACK                        //Case 4
+                 LEFT-ROTATE(T, p(x))                          //Case 4
+                 x<-root(T)                                    //Case 4
+      else (same as then clause
+            with "right" and "left" exchanged)
+color(x)<-BLACK
 */
 
 /*
 RB-DELETE (T, z)
 
-1 if left[z] = nil[T] or right[z] = nil[T]
-2      then y  z
-3      else y  TREE-SUCCESSOR(z)
-4 if left[y]  nil[T]     
-5     then x  left[y]
-6     else x  right[y]
-7 p[x]  p[y]
-8 if p[y] = nil[T]
-9    then root[T]  x
-10    else if y = left[p[y]]
-11            then left[p[y]]  x
-12            else right[p[y]]  x
-13 if y  z
-14     then key[z]  key[y]
-15           If y has other fields, copy them, too.
-16 if color[y] = BLACK
-17     then RB-DELETE-FIXUP (T,x)
-18 return y
+if left[z] = nil[T] or right[z] = nil[T]
+     then y<-z
+     else y<-TREE-SUCCESSOR(z)
+if left[y] != nil[T]     
+    then x<-left[y]
+    else x<-right[y]
+p[x]<-p[y]
+if p[y] = nil[T]
+   then root[T]<-x
+   else if y = left[p[y]]
+           then left[p[y]]<-x
+           else right[p[y]]<-x
+if y != z
+    then key[z]<-key[y]
+         // If y has other fields, copy them, too.
+if color[y] = BLACK
+    then RB-DELETE-FIXUP (T,x)
+return y
 */
 //from http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap13.htm
 void Tree::treeInsert(struct Node* newNode) {
