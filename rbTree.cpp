@@ -9,9 +9,9 @@ using namespace std;
 class Tree {
 public:
   void insert(int);
-  void remove(int);
   int find(int);
   void print(void);
+  int deleteNode(int);
   
 private:
   struct Node {
@@ -37,77 +37,92 @@ private:
   void rightRotate(struct Node*); // x
   void treeInsert(struct Node*);
   struct Node* treeMin(struct Node*);
+  struct Node* remove(struct Node*);
+  struct Node* treeSucc(struct Node*);
+  void fixup(struct Node*);
   
   
   Node* root = NULL;
 };
 
-/*
-RB-DELETE-FIXUP(T,x)
-while x != root[T] and color[x] = BLACK
-   do if x = left(p(x))
-      then w<-right(p(x))
-         if color(w) = RED
-            then color(w)<-BLACK                               //Case 1
-                 color(p(x))<-RED                              //Case 1
-                 LEFT-ROTATE(T,p(x))                           //Case 1
-                 w<-right(p(x))                                //Case 1
-         if color(left(w)) = BLACK and color(right(w)) = BLACK
-            then color(w)<-RED                                 //Case 2
-               X<-p(x)                                         //Case 2
-            else if color(right(w)) = BLACK
-               then color(left(W))<-BLACK                      //Case 3
-                    color(w)<-RED                              //Case 3
-                    RIGHT-ROTATE(T,w)                          //Case 3
-                    w<-right(p(x))                             //Case 3
-                 color(w)<-color(p(x))                         //Case 4
-                 color(p(x))<—BLACK                            //Case 4
-                 color(right(w))<-BLACK                        //Case 4
-                 LEFT-ROTATE(T, p(x))                          //Case 4
-                 x<-root(T)                                    //Case 4
-      else (same as then clause
-            with "right" and "left" exchanged)
-color(x)<-BLACK
-*/
 
-/*
-RB-DELETE (T, z)
-
-if left[z] = nil[T] or right[z] = nil[T]
-     then y<-z
-     else y<-TREE-SUCCESSOR(z)
-if left[y] != nil[T]     
-    then x<-left[y]
-    else x<-right[y]
-p[x]<-p[y]
-if p[y] = nil[T]
-   then root[T]<-x
-   else if y = left[p[y]]
-           then left[p[y]]<-x
-           else right[p[y]]<-x
-if y != z
-    then key[z]<-key[y]
-         // If y has other fields, copy them, too.
-if color[y] = BLACK
-    then RB-DELETE-FIXUP (T,x)
-return y
-*/
-
-/*
-TREE-SUCCESSOR(x)
-if (right(x) != NULL {
-   return TREE-MINIMUM(right(x));
+void Tree::fixup(struct Node* xNode) {
+// while x != root[T] and color[x] = BLACK
+//    do if x = left(p(x))
+//       then w<-right(p(x))
+//          if color(w) = RED
+//             then color(w)<-BLACK                               //Case 1
+//                  color(p(x))<-RED                              //Case 1
+//                  LEFT-ROTATE(T,p(x))                           //Case 1
+//                  w<-right(p(x))                                //Case 1
+//          if color(left(w)) = BLACK and color(right(w)) = BLACK
+//             then color(w)<-RED                                 //Case 2
+//                X<-p(x)                                         //Case 2
+//             else if color(right(w)) = BLACK
+//                then color(left(W))<-BLACK                      //Case 3
+//                     color(w)<-RED                              //Case 3
+//                     RIGHT-ROTATE(T,w)                          //Case 3
+//                     w<-right(p(x))                             //Case 3
+//                  color(w)<-color(p(x))                         //Case 4
+//                  color(p(x))<—BLACK                            //Case 4
+//                  color(right(w))<-BLACK                        //Case 4
+//                  LEFT-ROTATE(T, p(x))                          //Case 4
+//                  x<-root(T)                                    //Case 4
+//       else (same as then clause
+//             with "right" and "left" exchanged)
+// color(x)<-BLACK
 }
-y<-p(x)
-while (y != NULL && x == right(y)) {
-   x<-y;
-   y<-p(y);
+
+
+struct Tree::Node* Tree::remove(struct Node* thisNode) {
+  struct Node* yNode;
+  struct Node* xNode;
+  if (thisNode->left == NULL || thisNode->right == NULL) {
+    yNode = thisNode;
+  }
+  else {
+    yNode = treeSucc(thisNode);
+  }
+  if (yNode->left != NULL) {    
+    xNode = yNode->left;
+  }
+  else {
+    xNode = yNode->right;
+  }
+  xNode->parent = yNode->parent;
+  if (yNode->parent == NULL) {
+    root = xNode;
+  }
+  else if (yNode == yNode->parent->left) {
+    yNode->parent->left = xNode;
+  }
+  else {
+    yNode->parent->right = xNode;
+  }
+  if (yNode != thisNode) {
+    thisNode->data = yNode->data;
+  }
+  if (yNode->isRed == false) {
+    fixup(xNode);
+  }
+  return yNode;
 }
-return y;
- */
-
-
+ 
+struct Tree::Node* Tree::treeSucc(struct Node* xNode) {
+  struct Node* yNode;
+  if (xNode->right != NULL) {
+    return treeMin(xNode->right);
+  }
+  yNode = xNode->parent;
+  while (yNode != NULL && xNode == yNode->right) {
+    xNode = yNode;
+    yNode = yNode->parent;
+  }
+  return yNode;
+}
+ 
 struct Tree::Node* Tree::treeMin(struct Node* thisNode) {
+  assert(thisNode != NULL);
   while (thisNode->left != NULL) {
     thisNode = thisNode->left;
   }
@@ -275,6 +290,17 @@ int Tree::find(int x) {
   }
 }
 
+int Tree::deleteNode(int x) {
+  Node* node = findNode(root, x);
+  if (node != NULL) {
+    delete(remove(node));
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
 void Tree::printNode(struct Node* node, int indentLevel) {
   if (node == NULL) {
     return;
@@ -342,7 +368,8 @@ int main() {
     else if (input == "Remove") {
       cout << "Enter a number to remove: " << endl;
       cin >> tempInt;
-      cout << "remove" << endl; //thisTree.remove(tempInt);
+      thisTree.deleteNode(tempInt);
+      cout << "Deleted" << endl;
     }
     else if (input == "Find") {
       cout << "Enter a number to find: " << endl;
