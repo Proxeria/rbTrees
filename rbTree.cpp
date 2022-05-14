@@ -36,6 +36,7 @@ private:
   void leftRotate(struct Node*); // x
   void rightRotate(struct Node*); // x
   void treeInsert(struct Node*);
+  struct Node* treeMin(struct Node*);
   
   
   Node* root = NULL;
@@ -91,6 +92,28 @@ if color[y] = BLACK
     then RB-DELETE-FIXUP (T,x)
 return y
 */
+
+/*
+TREE-SUCCESSOR(x)
+if (right(x) != NULL {
+   return TREE-MINIMUM(right(x));
+}
+y<-p(x)
+while (y != NULL && x == right(y)) {
+   x<-y;
+   y<-p(y);
+}
+return y;
+ */
+
+
+struct Tree::Node* Tree::treeMin(struct Node* thisNode) {
+  while (thisNode->left != NULL) {
+    thisNode = thisNode->left;
+  }
+  return thisNode;
+}
+
 //from http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap13.htm
 void Tree::treeInsert(struct Node* newNode) {
   struct Node* yNode = NULL;
