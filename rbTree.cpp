@@ -23,13 +23,15 @@ private:
     
     Node(int val) {
       data = val;
-      isRed = false;
+      isRed = true;
       //initialize l/r node children to null
       parent = NULL;
       left = NULL;
       right = NULL;
     }
   };
+  struct Node nilNode = Node(0);
+  struct Node* nilNodePTR = &nilNode;
   void addNode(struct Node*);
   void printNode(struct Node*, int indentLevel);
   struct Node* findNode(struct Node* node, int x);
@@ -45,35 +47,70 @@ private:
   Node* root = NULL;
 };
 
-
+//from http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap14.htm
 void Tree::fixup(struct Node* xNode) {
-// while x != root[T] and color[x] = BLACK
-//    do if x = left(p(x))
-//       then w<-right(p(x))
-//          if color(w) = RED
-//             then color(w)<-BLACK                               //Case 1
-//                  color(p(x))<-RED                              //Case 1
-//                  LEFT-ROTATE(T,p(x))                           //Case 1
-//                  w<-right(p(x))                                //Case 1
-//          if color(left(w)) = BLACK and color(right(w)) = BLACK
-//             then color(w)<-RED                                 //Case 2
-//                X<-p(x)                                         //Case 2
-//             else if color(right(w)) = BLACK
-//                then color(left(W))<-BLACK                      //Case 3
-//                     color(w)<-RED                              //Case 3
-//                     RIGHT-ROTATE(T,w)                          //Case 3
-//                     w<-right(p(x))                             //Case 3
-//                  color(w)<-color(p(x))                         //Case 4
-//                  color(p(x))<—BLACK                            //Case 4
-//                  color(right(w))<-BLACK                        //Case 4
-//                  LEFT-ROTATE(T, p(x))                          //Case 4
-//                  x<-root(T)                                    //Case 4
-//       else (same as then clause
-//             with "right" and "left" exchanged)
-// color(x)<-BLACK
+  struct Node* wNode;
+  while (xNode != root && xNode->isRed == false) {
+    assert(xNode->parent != NULL);
+    if (xNode == xNode->parent->left) {
+      wNode = xNode->parent->right;
+      if (wNode->isRed) {
+	wNode->isRed = false;                               //Case 1
+	xNode->parent->isRed = true;                        //Case 1
+	leftRotate(xNode->parent);                          //Case 1
+	wNode = xNode->parent->right;                       //Case 1
+      }
+      if ((wNode->left != NULL && wNode->left->isRed == false) &&
+	  (wNode->right != NULL && wNode->right->isRed == false)) {
+	wNode->isRed = true;                                 //Case 2
+	xNode = xNode->parent;                               //case 2
+      }
+      else if (wNode->right != NULL && wNode->right->isRed == false) {
+	wNode->left->isRed = false;                       //Case 3
+	wNode->isRed = true;                              //Case 3
+	rightRotate(wNode);                               //Case 3
+	wNode = xNode->parent->right;                     //Case 3
+      }
+      wNode->isRed = xNode->parent->isRed;                //Case 4
+      xNode->parent->isRed = false;                       //Case 4
+      if (wNode->right != NULL) {
+	wNode->right->isRed = false;                        //Case 4
+      }
+      leftRotate(xNode->parent);                          //Case 4
+      xNode = root;                                       //Case 4     
+    }
+    else {
+      wNode = xNode->parent->left;
+      if (wNode->isRed) {
+	wNode->isRed = false;                               //Case 5
+	xNode->parent->isRed = true;                        //Case 5
+	rightRotate(xNode->parent);                          //Case 5
+	wNode = xNode->parent->left;                       //Case 5
+      }
+      if ((wNode->right != NULL && wNode->right->isRed == false) &&
+	  (wNode->left != NULL && wNode->left->isRed == false)) {
+	wNode->isRed = true;                                 //Case 6
+	xNode = xNode->parent;                               //case 6
+      }
+      else if (wNode->left != NULL && wNode->left->isRed == false) {
+	wNode->right->isRed = false;                       //Case 7
+	wNode->isRed = true;                              //Case 7
+	leftRotate(wNode);                               //Case 7
+	wNode = xNode->parent->left;                     //Case 7
+      }
+      wNode->isRed = xNode->parent->isRed;                //Case 8
+      xNode->parent->isRed = false;                       //Case 8
+      if (wNode->left != NULL) {
+	wNode->left->isRed = false;                        //Case 8
+      }
+      rightRotate(xNode->parent);                          //Case 8
+      xNode = root;                                       //Case 8
+    }
+  }
+  xNode->isRed = false;
 }
 
-
+//from http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap14.htm
 struct Tree::Node* Tree::remove(struct Node* thisNode) {
   struct Node* yNode;
   struct Node* xNode;
@@ -87,7 +124,15 @@ struct Tree::Node* Tree::remove(struct Node* thisNode) {
     xNode = yNode->left;
   }
   else {
-    xNode = yNode->right;
+    if (yNode->right == NULL) {
+      // Use sentinel for nil nodes
+      nilNode.parent = yNode;
+      nilNode.isRed = false;
+      xNode = nilNodePTR;
+    }
+    else {
+      xNode = yNode->right;
+    }
   }
   xNode->parent = yNode->parent;
   if (yNode->parent == NULL) {
@@ -302,7 +347,7 @@ int Tree::deleteNode(int x) {
 }
 
 void Tree::printNode(struct Node* node, int indentLevel) {
-  if (node == NULL) {
+  if ((node == NULL) || (node == nilNodePTR)) {
     return;
   }
   else {
@@ -310,12 +355,12 @@ void Tree::printNode(struct Node* node, int indentLevel) {
     for (int i = 0; i < indentLevel; i++) {
       cout << "   ";
     }
-	if (node->isRed == true) {
-   	   cout << "R " << node->data << endl;
-	}
-	else {
-	   cout << "B " << node->data << endl;
-	}
+    if (node->isRed == true) {
+      cout << "R " << node->data << endl;
+    }
+    else {
+      cout << "B " << node->data << endl;
+    }
     printNode(node->left, indentLevel + 1);
   }
 }
