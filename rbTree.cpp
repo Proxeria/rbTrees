@@ -42,6 +42,9 @@ private:
   struct Node* remove(struct Node*);
   struct Node* treeSucc(struct Node*);
   void fixup(struct Node*);
+  bool isNilNode(struct Node* node) {
+    return node == NULL || node == nilNodePTR;
+  }
   
   
   Node* root = NULL;
@@ -51,7 +54,7 @@ private:
 void Tree::fixup(struct Node* xNode) {
   struct Node* wNode;
   while (xNode != root && xNode->isRed == false) {
-    assert(xNode->parent != NULL);
+    assert(!isNilNode(xNode->parent));
     if (xNode == xNode->parent->left) {
       wNode = xNode->parent->right;
       if (wNode->isRed) {
@@ -60,12 +63,12 @@ void Tree::fixup(struct Node* xNode) {
 	leftRotate(xNode->parent);                          //Case 1
 	wNode = xNode->parent->right;                       //Case 1
       }
-      if ((wNode->left != NULL && wNode->left->isRed == false) &&
-	  (wNode->right != NULL && wNode->right->isRed == false)) {
+      if ((!isNilNode(wNode->left) && wNode->left->isRed == false) &&
+	  (!isNilNode(wNode->right) && wNode->right->isRed == false)) {
 	wNode->isRed = true;                                 //Case 2
 	xNode = xNode->parent;                               //case 2
       }
-      else if (wNode->right != NULL && wNode->right->isRed == false) {
+      else if (!isNilNode(wNode->right) && wNode->right->isRed == false) {
 	wNode->left->isRed = false;                       //Case 3
 	wNode->isRed = true;                              //Case 3
 	rightRotate(wNode);                               //Case 3
@@ -73,7 +76,7 @@ void Tree::fixup(struct Node* xNode) {
       }
       wNode->isRed = xNode->parent->isRed;                //Case 4
       xNode->parent->isRed = false;                       //Case 4
-      if (wNode->right != NULL) {
+      if (!isNilNode(wNode->right)) {
 	wNode->right->isRed = false;                        //Case 4
       }
       leftRotate(xNode->parent);                          //Case 4
@@ -81,18 +84,18 @@ void Tree::fixup(struct Node* xNode) {
     }
     else {
       wNode = xNode->parent->left;
-      if (wNode->isRed) {
+      if (!isNilNode(wNode) && wNode->isRed) {
 	wNode->isRed = false;                               //Case 5
 	xNode->parent->isRed = true;                        //Case 5
 	rightRotate(xNode->parent);                          //Case 5
 	wNode = xNode->parent->left;                       //Case 5
       }
-      if ((wNode->right != NULL && wNode->right->isRed == false) &&
-	  (wNode->left != NULL && wNode->left->isRed == false)) {
+      if ((!isNilNode(wNode->right) && wNode->right->isRed == false) &&
+	  (!isNilNode(wNode->left) && wNode->left->isRed == false)) {
 	wNode->isRed = true;                                 //Case 6
 	xNode = xNode->parent;                               //case 6
       }
-      else if (wNode->left != NULL && wNode->left->isRed == false) {
+      else if (!isNilNode(wNode->left) && wNode->left->isRed == false) {
 	wNode->right->isRed = false;                       //Case 7
 	wNode->isRed = true;                              //Case 7
 	leftRotate(wNode);                               //Case 7
@@ -100,7 +103,7 @@ void Tree::fixup(struct Node* xNode) {
       }
       wNode->isRed = xNode->parent->isRed;                //Case 8
       xNode->parent->isRed = false;                       //Case 8
-      if (wNode->left != NULL) {
+      if (!isNilNode(wNode->left)) {
 	wNode->left->isRed = false;                        //Case 8
       }
       rightRotate(xNode->parent);                          //Case 8
@@ -114,17 +117,17 @@ void Tree::fixup(struct Node* xNode) {
 struct Tree::Node* Tree::remove(struct Node* thisNode) {
   struct Node* yNode;
   struct Node* xNode;
-  if (thisNode->left == NULL || thisNode->right == NULL) {
+  if (isNilNode(thisNode->left) || isNilNode(thisNode->right)) {
     yNode = thisNode;
   }
   else {
     yNode = treeSucc(thisNode);
   }
-  if (yNode->left != NULL) {    
+  if (!isNilNode(yNode->left)) {    
     xNode = yNode->left;
   }
   else {
-    if (yNode->right == NULL) {
+    if (isNilNode(yNode->right)) {
       // Use sentinel for nil nodes
       nilNode.parent = yNode;
       nilNode.isRed = false;
@@ -135,7 +138,7 @@ struct Tree::Node* Tree::remove(struct Node* thisNode) {
     }
   }
   xNode->parent = yNode->parent;
-  if (yNode->parent == NULL) {
+  if (isNilNode(yNode->parent)) {
     root = xNode;
   }
   else if (yNode == yNode->parent->left) {
@@ -155,11 +158,11 @@ struct Tree::Node* Tree::remove(struct Node* thisNode) {
  
 struct Tree::Node* Tree::treeSucc(struct Node* xNode) {
   struct Node* yNode;
-  if (xNode->right != NULL) {
+  if (!isNilNode(xNode->right)) {
     return treeMin(xNode->right);
   }
   yNode = xNode->parent;
-  while (yNode != NULL && xNode == yNode->right) {
+  while (!isNilNode(yNode) && xNode == yNode->right) {
     xNode = yNode;
     yNode = yNode->parent;
   }
@@ -167,8 +170,8 @@ struct Tree::Node* Tree::treeSucc(struct Node* xNode) {
 }
  
 struct Tree::Node* Tree::treeMin(struct Node* thisNode) {
-  assert(thisNode != NULL);
-  while (thisNode->left != NULL) {
+  assert(!isNilNode(thisNode));
+  while (!isNilNode(thisNode->left)) {
     thisNode = thisNode->left;
   }
   return thisNode;
@@ -179,7 +182,7 @@ void Tree::treeInsert(struct Node* newNode) {
   struct Node* yNode = NULL;
   struct Node* xNode = root;
   
-  while (xNode != NULL) {
+  while (!isNilNode(xNode)) {
        yNode = xNode;  
        if (newNode->data < xNode->data) {
 	 xNode = xNode->left;
@@ -189,7 +192,7 @@ void Tree::treeInsert(struct Node* newNode) {
        }
   }
   newNode->parent = yNode;  
-  if (yNode == NULL) {
+  if (isNilNode(yNode)) {
     root = newNode;
   }
   else if (newNode->data < yNode->data) {
@@ -204,14 +207,14 @@ void Tree::addNode(struct Node* newNode) {
   struct Node* yNode = NULL;
   treeInsert(newNode);
   newNode->isRed = true;
-  while ((newNode != root) && (newNode->parent != NULL) && (newNode->parent->isRed)) {  
-    if ((newNode->parent != NULL) && (newNode->parent->parent != NULL)) { 
+  while ((newNode != root) && (!isNilNode(newNode->parent)) && (newNode->parent->isRed)) {  
+    if ((!isNilNode(newNode->parent)) && (!isNilNode(newNode->parent->parent))) { 
       if (newNode->parent == newNode->parent->parent->left) {
 	yNode = newNode->parent->parent->right;
 	// if (yNode == NULL) {
 	//   break;
 	// }
-	if ((yNode != NULL) && (yNode->isRed)) {
+	if ((!isNilNode(yNode)) && (yNode->isRed)) {
 	  newNode->parent->isRed = false; //case 1
 	  yNode->isRed = false;     //case 1
 	  newNode->parent->parent->isRed = true; //case 1
@@ -221,9 +224,9 @@ void Tree::addNode(struct Node* newNode) {
 	  newNode = newNode->parent;          //case 2
 	  leftRotate(newNode);   //case 2
 	}
-	if (newNode->parent != NULL) {
+	if (!isNilNode(newNode->parent)) {
 	  newNode->parent->isRed = false;    //case 3
-	  if (newNode->parent->parent != NULL) {
+	  if (!isNilNode(newNode->parent->parent)) {
 	    newNode->parent->parent->isRed = true;   //case 3
 	    rightRotate(newNode->parent->parent); //case 3
 	  }
@@ -235,7 +238,7 @@ void Tree::addNode(struct Node* newNode) {
 	// if (yNode == NULL) {
 	//   break;
 	// }
-	if ((yNode != NULL) && (yNode->isRed)) {
+	if ((!isNilNode(yNode)) && (yNode->isRed)) {
 	  newNode->parent->isRed = false; //case 4
 	  yNode->isRed = false;     //case 4
 	  newNode->parent->parent->isRed = true; //case 4
@@ -245,9 +248,9 @@ void Tree::addNode(struct Node* newNode) {
 	  newNode = newNode->parent;          //case 5
 	  rightRotate(newNode);   //case 5
 	}
-	if (newNode->parent != NULL) {
+	if (!isNilNode(newNode->parent)) {
 	  newNode->parent->isRed = false;    //case 6
-	  if (newNode->parent->parent != NULL) {
+	  if (!isNilNode(newNode->parent->parent)) {
 	    newNode->parent->parent->isRed = true;   //case 6
 	    leftRotate(newNode->parent->parent); //case 6
 	  }
@@ -267,11 +270,11 @@ void Tree::leftRotate(struct Node* node) {
   struct Node* yNode = NULL;
   yNode = node->right; //set y
   node->right = yNode->left; //turns y's left subtree into x's right subtree
-  if (yNode->left != NULL) {
+  if (!isNilNode(yNode->left)) {
     yNode->left->parent = node;
   }
   yNode->parent = node->parent;  //link x's parent to y
-   if (node->parent == NULL) {
+  if (isNilNode(node->parent)) {
      root = yNode;
    }
    else if (node == node->parent->left) {
@@ -288,11 +291,11 @@ void Tree::rightRotate(struct Node* node) {
   struct Node* yNode = NULL;
   yNode = node->left; //set y
   node->left = yNode->right; //turns y's right subtree into x's left subtree
-  if (yNode->right != NULL) {
+  if (!isNilNode(yNode->right)) {
     yNode->right->parent = node;
   }
   yNode->parent = node->parent;  //link x's parent to y
-   if (node->parent == NULL) {
+  if (isNilNode(node->parent)) {
      root = yNode;
    }
    else if (node == node->parent->right) {
@@ -306,7 +309,7 @@ void Tree::rightRotate(struct Node* node) {
 }
 
 struct Tree::Node* Tree::findNode(struct Node* node, int x) {
-  if (node == NULL) {
+  if (isNilNode(node)) {
     return NULL;
   }
   else {
@@ -315,7 +318,7 @@ struct Tree::Node* Tree::findNode(struct Node* node, int x) {
     }
     else {
       Node* match = findNode(node->left, x);
-      if (match != NULL) {
+      if (!isNilNode(match)) {
 	return match;
       }
       else {
@@ -327,7 +330,7 @@ struct Tree::Node* Tree::findNode(struct Node* node, int x) {
 
 int Tree::find(int x) {
   Node* node = findNode(root, x);
-  if (node != NULL) {
+  if (!isNilNode(node)) {
     return 1;
   }
   else {
@@ -337,7 +340,7 @@ int Tree::find(int x) {
 
 int Tree::deleteNode(int x) {
   Node* node = findNode(root, x);
-  if (node != NULL) {
+  if (!isNilNode(node)) {
     delete(remove(node));
     return 1;
   }
@@ -347,7 +350,7 @@ int Tree::deleteNode(int x) {
 }
 
 void Tree::printNode(struct Node* node, int indentLevel) {
-  if ((node == NULL) || (node == nilNodePTR)) {
+  if ((isNilNode(node)) || (node == nilNodePTR)) {
     return;
   }
   else {
